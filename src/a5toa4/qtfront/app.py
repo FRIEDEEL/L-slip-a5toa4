@@ -10,17 +10,20 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QLabel,
     QHBoxLayout,
+    QMessageBox
 )
 
 from pathlib import Path
 import sys
 from dataclasses import dataclass, field
 
+from a5toa4.core import merge_a5_to_a4_pdfs
+
 @dataclass
 class AppState():
-    output_dir: Path | None= Path()
+    output_dir: Path | None = None
     files: list[Path] = field(default_factory = list)
-    pass
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -37,6 +40,7 @@ class MainWindow(QMainWindow):
 
         self.output_dir: Path | None = None
 
+        self._setup_convert_btn()
         self._setup_layout()
         # ------------------------- I am a split line \(ow <) -------------------------
 
@@ -79,7 +83,7 @@ class MainWindow(QMainWindow):
 
     def _setup_convert_btn(self):
         self.convert_btn = QPushButton("Convert to A4 file.")
-        self.convert_btn.clicked.connect # todo
+        self.convert_btn.clicked.connect(self.convert_files)
         pass
 
     def _setup_layout(self):
@@ -91,8 +95,23 @@ class MainWindow(QMainWindow):
         # previous setup layouts
         layout.addWidget(self.input_section)
         layout.addWidget(self.output_section)
+        layout.addWidget(self.convert_btn)
 
-    def convert_file(self):
+    def convert_files(self):
+        if (len(self.state.files) == 0) or (self.state.output_dir is None):
+            QMessageBox.information(
+                self,
+                "Information",
+                "Please select input file and output directory."
+            )
+            return
+        else:
+            merge_a5_to_a4_pdfs(self.state.files, self.state.output_dir)
+            QMessageBox.information(
+                self,
+                "Information",
+                f"PDF file converted and saved to {self.state.output_dir}."
+            )
         pass
         
     def add_files(self):
