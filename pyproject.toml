@@ -1,9 +1,15 @@
 [project]
-name = "251126-pdf-reach"
+name = "a5toa4"
 version = "0.1.0"
-description = "Add your description here"
+description = "An L-classification slip making widget."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "pyinstaller>=6.19.0",
     "pymupdf>=1.27.1",
+    "pyqt5>=5.15.11",
+    "pytest>=9.0.2",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/a5toa4"]
